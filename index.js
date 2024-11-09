@@ -207,7 +207,7 @@ function loadNavigatorAudioRecording() {
         console.debug(DEBUG_PREFIX + ' getUserMedia supported by browser.');
         const micButton = $('#microphone_button');
 
-         let onSuccess = function (stream) {
+        let onSuccess = function (stream) {
             const audioContext = new AudioContext();
             const source = audioContext.createMediaStreamSource(stream);
             const settings = {
