@@ -12,7 +12,6 @@ import { WhisperLocalSttProvider } from './whisper-local.js';
 import { BrowserSttProvider } from './browser.js';
 import { StreamingSttProvider } from './streaming.js';
 import { KoboldCppSttProvider } from './koboldcpp.js';
-import { VAD } from './vad.js'
 export { MODULE_NAME };
 export { activateMicIcon, deactivateMicIcon };
 
@@ -212,6 +211,8 @@ async function loadNavigatorAudioRecording() {
 
         let onSuccess = async function (stream) {
             const myVAD = await vad.MicVAD.new({
+                redemptionFrames: 15,
+
                 onSpeechStart: () => {
                     if (!audioRecording && extension_settings.speech_recognition.voiceActivationEnabled) {
                         console.debug(DEBUG_PREFIX + 'Voice started');
@@ -278,7 +279,7 @@ async function loadNavigatorAudioRecording() {
                 audioChunks.push(e.data);
             };
 
-            async function processPcmArrays(sampleRate, wavBlob) {
+            async function processPcmArrays(sampleRate, pcmArrays) {
                 const wavBlob = await convertAudioBufferToWavBlob(sampleRate, pcmArrays);
                 const transcript = await sttProvider.processAudio(wavBlob);
                 // TODO: lock and release recording while processing?
@@ -688,7 +689,7 @@ async function loadScripts()
 {
     function loadScript(url) {
         return new Promise(resolve => {
-            if (!document.querySelector("script[src=" + url + "]")) {
+            if (!document.querySelector("script[src='" + url + "']")) {
                 const elem = document.createElement("script");
                 elem.addEventListener("load", () => resolve());
                 elem.src = url;
@@ -697,10 +698,8 @@ async function loadScripts()
         });
     }
 
-    await Promise.all([
-        loadScript("/scripts/extensions/third-party/Extension-Speech-Recognition/vad-ricky0123/onnxruntime-ort.js"),
-        loadScript("/scripts/extensions/third-party/Extension-Speech-Recognition/vad-ricky0123/vad.min.js"),
-    ]);
+    await loadScript("https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.js");
+    await loadScript("https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.19/dist/bundle.min.js");
 }
 
 $(document).ready(function () {
