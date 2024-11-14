@@ -698,8 +698,14 @@ async function loadScripts()
         });
     }
 
-    await loadScript("https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.js");
-    await loadScript("https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.19/dist/bundle.min.js");
+    //await loadScript("https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.js");
+    //await loadScript("https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.19/dist/bundle.min.js");
+    await loadScript("/scripts/extensions/third-party/Extension-Speech-Recognition/onnxruntime-web/ort.js");
+    await loadScript("/scripts/extensions/third-party/Extension-Speech-Recognition/ricky0123-vad-web/bundle.min.js");
+
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(), 1);
+    });
 }
 
 $(document).ready(function () {
